@@ -1,0 +1,53 @@
+version: '3.9'
+services:
+  music-service:
+    image: music_image
+    container_name: music-service
+    build: Musiz_Application_Challenge_c13_s3/
+    restart: always
+    networks:
+      - mynetwork
+    ports:
+      - 8088:8088
+    depends_on:
+      - mongoService
+
+
+  mongoService:
+    image: mongo
+    container_name: mongocontainer1
+    ports:
+      - 27017:27017
+    networks:
+      - mynetwork
+
+  authentication-service:
+    image: authentication_image
+    container_name: authentication-service
+    build: UserAuthentication/
+    restart: always
+    networks:
+      - mynetwork
+    ports:
+      - 8087:8087
+    depends_on:
+      - mysqlService
+
+
+  mysqlService:
+    image: mysql:latest
+    container_name: mysqlcontainer1
+    networks:
+      - mynetwork
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: root
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+
+
+networks:
+  mynetwork:
+    driver: bridge
